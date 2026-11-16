@@ -1,0 +1,36 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Home · Codewhale (DeepSeek harness) explained</title><link rel="stylesheet" href="style.css"></head><body>
+<nav><b>🐋 Codewhale</b><a href="index.html" class=on>🏠 Home</a><a href="usecase.html">🎬 Real use case</a><a href="why.html">🧠 First principles</a><a href="features.html">🧰 Features</a><a href="integrate.html">🔌 Integrate</a></nav><main>
+<p class="tag">🐋 Rust · MIT · 41k★ · formerly DeepSeek-TUI</p>
+<h1>The model can be anyone's.<br>The harness should be yours.</h1>
+<p class="lead">A <b>harness</b> is everything around an LLM that turns "text in, text out" into "reads my repo, edits files, runs tests, and proves it". <b>Codewhale</b> is the popular open-source one for DeepSeek models (and 40+ other providers).</p>
+<div class="btns"><a href="usecase.html">🎬 See the real use case</a><a class="alt" href="why.html">🧠 Why it makes sense</a><a class="alt" href="integrate.html">🔌 Plug into my setup</a></div>
+
+<h2>🗺️ The whole idea in one picture</h2>
+<div class="mermaid">flowchart LR
+ U[👤 You: 'Fix the failing tests'] --> H
+ subgraph H[🐋 HARNESS = Codewhale]
+  direction TB
+  L[🔁 Agent loop] --> T[🛠️ Tools: read · edit · shell · web · MCP]
+  L --> P[🛡️ Permissions + OS sandbox]
+  L --> R[🧾 Receipts + /undo]
+ end
+ H <--> M[(🧠 Model: DeepSeek V4.1 Flash by default<br>or Claude, GPT, Gemini, Ollama...)]
+ H --> Repo[(📁 Your git repo)]</div>
+
+<h2>❓ Three questions, answered fast</h2>
+<div class="grid">
+<div class="card"><div class="big">🧭</div><h3>How is it used?</h3><p>Run <code>codewhale</code> in a git repo, type a task in English, approve commands, review the diff. <a href="usecase.html">Walkthrough →</a></p></div>
+<div class="card"><div class="big">💡</div><h3>Why use it?</h3><p>Cheap strong model + a safe, inspectable loop you own. No vendor lock-in. <a href="why.html">First principles →</a></p></div>
+<div class="card"><div class="big">🧰</div><h3>What can it do?</h3><p>Sub-agents, Fleets, MCP, hooks, skills, undo, web UI, headless CI. <a href="features.html">Feature tour →</a></p></div>
+</div>
+
+<h2>⚡ 60-second start</h2>
+<pre><code>curl -fsSL https://codewhale.net/install.sh | sh   # macOS / Linux, no account
+cd your-git-repo
+codewhale                                          # then /provider → paste a DeepSeek key
+# type:  Fix the failing tests and explain what changed.</code></pre>
+<div class="note">⚠️ Commit or stash first. Then <code>/undo</code> is a safety net, not your only one.</div>
+
+<footer>Unofficial explainer. Facts taken from the <a href="https://github.com/codewhale-hq/Codewhale">Codewhale README &amp; docs</a> (MIT, formerly <i>DeepSeek-TUI</i>) as of Nov 2026. Always check upstream docs for current flags.</footer></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<script>const d=matchMedia('(prefers-color-scheme:dark)').matches;mermaid.initialize({startOnLoad:true,theme:d?'dark':'default',securityLevel:'loose'});</script></body></html>

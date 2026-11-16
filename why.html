@@ -1,0 +1,44 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>First principles · Codewhale (DeepSeek harness) explained</title><link rel="stylesheet" href="style.css"></head><body>
+<nav><b>🐋 Codewhale</b><a href="index.html">🏠 Home</a><a href="usecase.html">🎬 Real use case</a><a href="why.html" class=on>🧠 First principles</a><a href="features.html">🧰 Features</a><a href="integrate.html">🔌 Integrate</a></nav><main>
+<h1>🧠 Why it makes sense: first principles</h1>
+<p class="lead">Strip away the hype. What is a coding agent, really?</p>
+
+<h2>1️⃣ An LLM can only emit text</h2>
+<p>It cannot read your disk, run <code>pytest</code>, or remember yesterday. Everything beyond "predict the next tokens" has to be supplied from outside.</p>
+<h2>2️⃣ So an agent = model + loop + tools</h2>
+<div class="mermaid">flowchart LR
+ A[🧠 Model proposes an action] --> B[🛠️ Harness executes it]
+ B --> C[👀 Result goes back as context]
+ C --> A
+ B -. gate .-> D[🛡️ permission check]</div>
+<p>That outer loop is the <b>harness</b>. The model supplies judgment; the harness supplies <i>hands, eyes, memory and brakes</i>.</p>
+
+<h2>3️⃣ Therefore the harness decides the outcome</h2>
+<table><tr><th>Concern</th><th>Who controls it?</th><th>Codewhale's answer</th></tr>
+<tr><td>💸 Cost</td><td>Model choice + context handling</td><td>Cheap DeepSeek default; <code>/model auto</code> per turn; <code>/cost</code></td></tr>
+<tr><td>🛡️ Safety</td><td>Harness only (model can't police itself)</td><td>Ask / Auto-Review / Full Access, OS sandbox (Seatbelt, bubblewrap), secrets dirs blocked</td></tr>
+<tr><td>🧾 Trust</td><td>Harness logs</td><td>Receipts for every file, command, MCP call, approval</td></tr>
+<tr><td>↩️ Recovery</td><td>Harness snapshots</td><td><code>/undo</code>, <code>/restore</code></td></tr>
+<tr><td>🔓 Lock-in</td><td>Who owns the loop</td><td>MIT, Rust, 40+ providers, any OpenAI-compatible endpoint, local Ollama/vLLM</td></tr></table>
+
+<h2>4️⃣ Why separate harness from model?</h2>
+<div class="mermaid">flowchart TB
+ subgraph Coupled[❌ Coupled: vendor CLI]
+  V1[One model] --- V2[Closed loop]
+ end
+ subgraph Decoupled[✅ Decoupled: Codewhale]
+  D1[Any model] --- D2[Open loop you can read]
+ end
+ Coupled -->|model gets better elsewhere| X[😬 stuck]
+ Decoupled -->|swap one line| Y[😎 upgrade instantly]</div>
+<p>Models improve and reprice monthly. Your workflow (rules, hooks, skills, approvals) should <b>not</b> be rebuilt each time. Owning the harness makes the model a replaceable part.</p>
+
+<h2>5️⃣ Trade-offs (be honest)</h2>
+<ul><li>⚠️ Telemetry is <b>on by default</b> (aggregate counts only). Turn off: <code>codewhale config set telemetry false</code>.</li>
+<li>⚠️ Full Access disables the sandbox. Windows has no OS sandbox yet.</li>
+<li>⚠️ Fast-moving project: modes change in 0.10.3. Read the versioned docs for your install.</li>
+<li>⚠️ A cheaper model may need more review than a frontier one. The receipts make that cheap to do.</li></ul>
+
+<footer>Unofficial explainer. Facts taken from the <a href="https://github.com/codewhale-hq/Codewhale">Codewhale README &amp; docs</a> (MIT, formerly <i>DeepSeek-TUI</i>) as of Nov 2026. Always check upstream docs for current flags.</footer></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<script>const d=matchMedia('(prefers-color-scheme:dark)').matches;mermaid.initialize({startOnLoad:true,theme:d?'dark':'default',securityLevel:'loose'});</script></body></html>

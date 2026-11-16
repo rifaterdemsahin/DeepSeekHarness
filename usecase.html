@@ -1,0 +1,48 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Real use case · Codewhale (DeepSeek harness) explained</title><link rel="stylesheet" href="style.css"></head><body>
+<nav><b>🐋 Codewhale</b><a href="index.html">🏠 Home</a><a href="usecase.html" class=on>🎬 Real use case</a><a href="why.html">🧠 First principles</a><a href="features.html">🧰 Features</a><a href="integrate.html">🔌 Integrate</a></nav><main>
+<h1>🎬 Real use case: "add a feature, prove it works"</h1>
+<p class="lead">This is the exact demo from the project README: a small Python repo with <code>export.py</code> and three tests. Task: add a <code>--json</code> flag. Codewhale edits, runs the tests, then a <b>sub-agent reviews</b> the result.</p>
+
+<h2>🪜 Step by step</h2>
+<div class="step"><i>1</i><div><b>Start clean.</b> <code>git status</code> is clean, then run <code>codewhale</code> in the repo root.</div></div>
+<div class="step"><i>2</i><div><b>Pick a model once.</b> <code>/provider</code> (or <kbd>F3</kbd>), paste a key. DeepSeek is the default provider.</div></div>
+<div class="step"><i>3</i><div><b>Say the goal.</b><pre><code>Add a --json flag to export.py, add tests, run them,
+then have a sub-agent review the change.</code></pre></div></div>
+<div class="step"><i>4</i><div><b>Watch the loop.</b> It reads files, edits <code>export.py</code> (edits apply without asking by default), and asks before any non-read-only shell command: <code>y</code> once · <code>a</code> allow similar · <code>n</code> refuse.</div></div>
+<div class="step"><i>5</i><div><b>Verify.</b> Tests run (3 pass), a delegated review reports no issues, the task list shows three completed steps.</div></div>
+<div class="step"><i>6</i><div><b>Audit or revert.</b> <code>/receipts</code> lists files changed, commands run, approvals. Don't like it? <code>/undo</code>.</div></div>
+
+<h2>🔁 What actually happens inside</h2>
+<div class="mermaid">sequenceDiagram
+ actor You
+ participant H as 🐋 Harness
+ participant M as 🧠 Model
+ participant FS as 📁 Repo/Shell
+ You->>H: task
+ loop until done or needs you
+  H->>M: context + tool list
+  M-->>H: 'call tool: read export.py'
+  H->>FS: run tool (policy + sandbox check)
+  FS-->>H: result
+  H->>H: log receipt
+ end
+ H->>M: spawn review sub-agent
+ M-->>H: 'no issues'
+ H-->>You: summary + diff + receipts</div>
+
+<h2>🤖 Same task, no human: CI</h2>
+<pre><code>codewhale exec "Fix the failing tests and explain what changed."</code></pre>
+<div class="note">⚠️ Read the headless docs before using <code>--auto</code>: it means <b>Full Access</b> unless you add a sandbox. Hooks are off in <code>exec</code> unless you pass <code>--hooks</code>.</div>
+
+<h2>🌐 Other ways to drive it</h2>
+<table><tr><th>Command</th><th>Use</th></tr>
+<tr><td><code>codewhale</code></td><td>Interactive TUI</td></tr>
+<tr><td><code>codewhale exec "…"</code></td><td>Scripts / CI</td></tr>
+<tr><td><code>codewhale web</code></td><td>Local browser client on 127.0.0.1</td></tr>
+<tr><td><code>codewhale review --pr N</code></td><td>Advisory PR review</td></tr>
+<tr><td><code>codewhale serve --acp</code></td><td>Editors like Zed</td></tr>
+<tr><td><code>codewhale app-server --http</code></td><td>Runtime HTTP API</td></tr></table>
+
+<footer>Unofficial explainer. Facts taken from the <a href="https://github.com/codewhale-hq/Codewhale">Codewhale README &amp; docs</a> (MIT, formerly <i>DeepSeek-TUI</i>) as of Nov 2026. Always check upstream docs for current flags.</footer></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<script>const d=matchMedia('(prefers-color-scheme:dark)').matches;mermaid.initialize({startOnLoad:true,theme:d?'dark':'default',securityLevel:'loose'});</script></body></html>

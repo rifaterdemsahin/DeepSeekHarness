@@ -1,0 +1,39 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Features · Codewhale (DeepSeek harness) explained</title><link rel="stylesheet" href="style.css"></head><body>
+<nav><b>🐋 Codewhale</b><a href="index.html">🏠 Home</a><a href="usecase.html">🎬 Real use case</a><a href="why.html">🧠 First principles</a><a href="features.html" class=on>🧰 Features</a><a href="integrate.html">🔌 Integrate</a></nav><main>
+<h1>🧰 Feature tour</h1>
+<p class="lead">Grouped by the job each feature does.</p>
+<div class="grid">
+<div class="card"><div class="big">🌍</div><h3>Any model</h3><p>40+ providers: Anthropic, OpenAI, DeepSeek, Google, Mistral, Moonshot, OpenRouter, xAI. Any OpenAI-compatible endpoint, Ollama, vLLM, SGLang. <code>/model</code>, <code>/model auto</code>, <code>/turn inspect</code>.</p></div>
+<div class="card"><div class="big">🧾</div><h3>Receipts &amp; undo</h3><p><code>/receipts</code>, <code>/undo</code>, <code>/restore</code> (snapshots in a side git repo).</p></div>
+<div class="card"><div class="big">👥</div><h3>Many agents</h3><p><code>/goal</code> objectives, sub-agents, Fleets with roles and models, workflows checked into the repo.</p></div>
+<div class="card"><div class="big">🔌</div><h3>Extensions</h3><p>MCP servers, skills (<code>SKILL.md</code>), plugins, hooks, TypeScript mods. Code mode: one <code>execute_tools</code> program calling many tools.</p></div>
+<div class="card"><div class="big">🛡️</div><h3>Safety dial</h3><p>Plan (read-only) → Work → Operate; Ask / Auto-Review / Full Access via <kbd>Shift+Tab</kbd>.</p></div>
+<div class="card"><div class="big">🖥️</div><h3>Many surfaces</h3><p>TUI, <code>exec</code>, <code>web</code>, Runtime API, ACP for Zed, community VS Code extension. One shared engine.</p></div>
+</div>
+
+<h2>🏗️ Architecture</h2>
+<div class="mermaid">flowchart TB
+ subgraph Clients
+  TUI[TUI ratatui] ; EX[exec] ; WEB[web] ; ACP[ACP / editors] ; API[Runtime API]
+ end
+ Clients --> ENG[⚙️ Engine: run_turn loop]
+ ENG --> TL[Tools: shell, files, Web, agent]
+ ENG --> EXT[Skills · Hooks · MCP · Plugins]
+ ENG --> POL[Approval + sandbox policy]
+ ENG --> PROV[Provider router → any model]
+ ENG --> LOG[(Session log / snapshots)]
+ ENG --> LSP[LSP diagnostics after edits]</div>
+
+<h2>🎚️ Permission modes</h2>
+<table><tr><th>Mode</th><th>Behaviour</th></tr>
+<tr><td>🟢 Ask (default)</td><td>Edits in your repo apply; non-read-only shell commands need approval</td></tr>
+<tr><td>🟡 Auto-Review</td><td>Rules + a reviewer model approve routine calls, refuse high-risk ones</td></tr>
+<tr><td>🔴 Full Access</td><td>Never asks, sandbox off (repo rules and managed policy still apply)</td></tr></table>
+<div class="note">Per upstream, 0.10.3 will unify this into one <kbd>Shift+Tab</kbd> dial (Ask, Accept Edits, Plan, Auto-Review, Full Access). Check <code>docs/MODES.md</code> for your version.</div>
+
+<h2>🔭 Roadmap (upstream)</h2>
+<table><tr><th>Part</th><th>State</th></tr><tr><td>Terminal app, local web client, multi-agent</td><td>✅ Released</td></tr><tr><td>Desktop app</td><td>🛠️ In development</td></tr><tr><td>Cloud computers</td><td>🔒 Invite-only</td></tr></table>
+
+<footer>Unofficial explainer. Facts taken from the <a href="https://github.com/codewhale-hq/Codewhale">Codewhale README &amp; docs</a> (MIT, formerly <i>DeepSeek-TUI</i>) as of Nov 2026. Always check upstream docs for current flags.</footer></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<script>const d=matchMedia('(prefers-color-scheme:dark)').matches;mermaid.initialize({startOnLoad:true,theme:d?'dark':'default',securityLevel:'loose'});</script></body></html>

@@ -1,0 +1,48 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Integrate · Codewhale (DeepSeek harness) explained</title><link rel="stylesheet" href="style.css"></head><body>
+<nav><b>🐋 Codewhale</b><a href="index.html">🏠 Home</a><a href="usecase.html">🎬 Real use case</a><a href="why.html">🧠 First principles</a><a href="features.html">🧰 Features</a><a href="integrate.html" class=on>🔌 Integrate</a></nav><main>
+<h1>🔌 Integrate with your existing harness &amp; tools</h1>
+<p class="lead">Principle: <b>reuse your instructions, tools and policies; don't rewrite them</b>.</p>
+<div class="mermaid">flowchart LR
+ subgraph Yours[Your existing stack]
+  A[AGENTS.md / CLAUDE.md]; B[.claude/skills]; C[MCP servers]; D[Shell hooks]; E[CI]; F[Editor]
+ end
+ subgraph CW[🐋 Codewhale]
+  I[Instruction loader]; S[Skill discovery]; M[MCP client]; H[Hooks]; X[exec]; Z[ACP / Runtime API]
+ end
+ A --> I; B --> S; C --> M; D --> H; E --> X; F --> Z</div>
+
+<h2>1️⃣ Instructions: AGENTS.md just works</h2>
+<p>Codewhale reads <code>AGENTS.md</code> automatically. Other files load only if you opt in:</p>
+<pre><code># ~/.codewhale/config.toml
+project_instruction_imports = ["claude"]   # or "cursor","cline","windsurf","copilot","all"</code></pre>
+<h2>2️⃣ Skills: your existing ones are discovered</h2>
+<p>Read-only compatible roots include <code>.claude/skills</code>, <code>.agents/skills</code>, <code>.cursor/skills</code>, <code>.opencode/skills</code>. Owned, writable roots are <code>.codewhale/skills/</code> (project) and <code>~/.codewhale/skills/</code> (global). Workspace skills load only after <code>/trust on --save</code>. Use <code>/skills manage</code> to audit shadowing.</p>
+<h2>3️⃣ Tools: MCP both directions</h2>
+<ul><li><b>Client:</b> add servers via <code>/mcp add</code> (stdio or remote HTTP/SSE). Check with <code>/mcp status</code> / <code>/mcp doctor</code>.</li>
+<li><b>Server:</b> <code>codewhale serve --mcp</code> exposes its native tools to another client (write tools withheld unless you permit them).</li></ul>
+<h2>4️⃣ Hooks: bolt on your own policy</h2>
+<pre><code>[hooks]
+enabled = true
+
+[[hooks.hooks]]
+name = "announce"
+event = "session_start"
+command = "echo 'Codewhale session started'"</code></pre>
+<p><code>tool_call_before</code> with exit code 2 <b>denies</b> a tool call: a natural place for your company's rules. List events with <code>/hooks events</code>.</p>
+<h2>5️⃣ CI &amp; editors</h2>
+<pre><code>codewhale exec --hooks "Fix the failing tests"   # hooks opt-in for headless
+codewhale review --pr 123                        # advisory PR review
+codewhale serve --acp                            # Zed and other ACP editors</code></pre>
+
+<h2>🗺️ Suggested rollout</h2>
+<div class="mermaid">flowchart LR
+ A[1 Install + telemetry off] --> B[2 Plan mode on a real repo]
+ B --> C[3 Import AGENTS.md / skills]
+ C --> D[4 Add MCP + hooks]
+ D --> E[5 exec in CI with sandbox]
+ E --> F[6 Fleets for big tasks]</div>
+<div class="note ok">✅ Start read-only (Plan mode), read <code>/receipts</code> after each session, then widen permissions only where receipts show it is safe.</div>
+
+<footer>Unofficial explainer. Facts taken from the <a href="https://github.com/codewhale-hq/Codewhale">Codewhale README &amp; docs</a> (MIT, formerly <i>DeepSeek-TUI</i>) as of Nov 2026. Always check upstream docs for current flags.</footer></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<script>const d=matchMedia('(prefers-color-scheme:dark)').matches;mermaid.initialize({startOnLoad:true,theme:d?'dark':'default',securityLevel:'loose'});</script></body></html>
